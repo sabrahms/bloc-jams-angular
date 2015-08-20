@@ -1,5 +1,18 @@
 <section class="album-covers container">
-    <div class="clearfix">
-        <h1>This is the collection page. Yeah! </h1>
-    </div>
+     <section class="album-covers container">
+        <div class="clearfix">
+            <div class="collection-album-container column fourth" ng-controller="Collection.controller" ng-repeat="album in albums track by $index">
+                <img ng-src="{{album.albumArtUrl}}">
+                <div class="collection-album-info caption">
+                    <p>
+                        <a class="album-name" ui-sref="album">{{album.name}}</a>
+                        <br>
+                        <a ui-sref="album">{{album.artist}}</a>
+                        <br>
+                        {{album.songs.length}} songs
+                        <br>
+                    </p>
+                </div>
+            </div>
+        </div>
 </section>

@@ -6,22 +6,41 @@ BlocJams.config(function($stateProvider, $locationProvider) {
         requreBase: false
     });
     
-    $stateProvider.state('album', {
-        url: '/album',
-        controller: 'Album.controller',
-        templateUrl: '/templates/album.html'
-    });
+    $stateProvider
+        .state('landing', {
+            url: '/',
+            controller: 'Landing.controller',
+            templateUrl: '/templates/landing.html'
+        }) 
     
-    $stateProvider.state('collection', {
-        url: '/collection',
-        controller: 'Collection.controller',
-        templateUrl: '/templates/collection.html'
-    });
+        .state('collection', {
+            url: '/collection',
+            controller: 'Collection.controller',
+            templateUrl: '/templates/collection.html'
+        })
     
-    $stateProvider.state('landing', {
-        url: '/landing',
-        controller: 'Landing.controller',
-        templateUrl: '/templates/landing.html'
-    });
-                        
+        .state('album', {
+            url: '/album',
+            controller: 'Album.controller',
+            templateUrl: '/templates/album.html'
+    });               
 });
+           
+//Controllers//
+
+BlocJams.controller('Landing.controller', ['$scope', function($scope) {
+    $scope.tagline = 'Turn the music up!';
+}]);
+
+BlocJams.controller('Collection.controller', ['$scope', function ($scope) {
+    $scope.albums = [];
+    for (var x=0; x < 12; x++) {
+        $scope.albums.push(albumPicasso);
+    };
+}]);
+
+BlocJams.controller('Album.controller', ['$scope', function() {
+    
+}]);
+
+         
