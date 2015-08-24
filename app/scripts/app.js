@@ -39,8 +39,82 @@ BlocJams.controller('Collection.controller', ['$scope', function ($scope) {
     };
 }]);
 
-BlocJams.controller('Album.controller', ['$scope', function() {
-    
+BlocJams.controller('Album.controller', [ '$scope', 'SongPlayer', function($scope, SongPlayer) {
+    $scope.album = albumPicasso;
+    $scope.play = function(song) {
+        SongPlayer.setSong($scope.album, song);
+    };
+    $scope.pause = function() {
+        SongPlayer.pause();
+    };
 }]);
 
-         
+
+
+
+//Services//
+
+BlocJams.service('SongPlayer', function() {
+    var getIndex = function(album, song) {
+        return album.songs.indexOf(song);
+    };
+    var currentSoundFile = null;
+    return {
+        isPlaying: false,
+        currentAlbum: null,
+        currentSong: null,
+        volume: 80,
+        play: function() {
+            currentSoundFile.play();
+            this.isPlaying = true;
+        },
+        pause: function() {
+            currentSoundFile.pause();
+            this.isPlaying = false;
+        },
+        setVolume: function(value) {
+            if (currentSoundFile) {
+                currentSoundFile.setVolume(value);
+            }
+        },
+        setSong: function(album, song) {
+            if (currentSoundFile) {
+                currentSoundFile.stop();
+            }
+            this.currentAlbum = album;
+            this.currentSong = song;
+            currentSoundFile = new buzz.sound(song.audioUrl, {
+                formats: ['mp3'],
+                preload: true
+            });
+            this.play();
+            this.setVolume(this.volume);
+        },
+        previous: function() {
+            var index = getIndex(this.currentAlbum, this.currentSong);
+            index--;
+            if (index < 0) {
+                index = this.currentAlbum.songs.length - 1;
+            }
+            var song = this.currentAlbum.songs[index];
+            this.setSong(this.currentAlbum, song);
+        },
+        next: function() {
+            var index = getIndex(this.currentAlbum, this.currentSong);
+            index++;
+            if (index >= this.currentAlbum.songs.length) {
+                index = 0;
+            }
+            var song = this.currentAlbum.songs[index];
+            this.setSong(this.currentAlbum, song);
+        },
+        getTimePos: function() {
+            if (currentSoundFile) {
+                currentSoundFile.bind('timeupdate', function() {
+                    return this.getTime() / this.getDuration();
+                });
+            }
+        }
+    };
+});
+

@@ -21,18 +21,19 @@
     <div class="container">
         <div class="player-bar-control-group left-controls">
             <a class="previous">
-                <span class="ion-skip-backward"></span>
+                <span class="ion-skip-backward" ng-click="previous()"></span>
             </a>
             <a class="play-pause">
-                <span class="ion-play"></span>
+                <span class="ion-play" ng-hide="this.isPlaying" ng-click="playSong(index || 0)"></span>
+                <span class="ion-pause" ng-show="this.isPlaying" ng-click="pauseSong()"></span>
             </a>
             <a class="next">
-                <span class="ion-skip-forward"></span>
+                <span class="ion-skip-forward" ng-click="next()"></span>
             </a>
         </div>
         <div class="player-bar-control-group currently-playing">
-            <h2 class="song-name"></h2>
-            <h2 class="artist-song-mobile"></h2>
+            <h2 class="song-name">{{songName}}</h2>
+            <h2 class="artist-song-mobile">{{songName}} - {{artist}}</h2>
             <div class="seek-control">
                 <div class="seek-bar">
                     <div class="fill"></div>
@@ -41,7 +42,7 @@
                 <div class="current-time"></div>
                 <div class="total"></div>
             </div>
-            <h3 class="artist-name"></h3>
+            <h3 class="artist-name">{{artist}}</h3>
         </div>
         <div class="player-bar-control-group right-controls">
             <div class="volume">
