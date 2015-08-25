@@ -39,82 +39,117 @@ BlocJams.controller('Collection.controller', ['$scope', function ($scope) {
     };
 }]);
 
-BlocJams.controller('Album.controller', [ '$scope', 'SongPlayer', function($scope, SongPlayer) {
+BlocJams.controller('Album.controller', [ '$scope', function($scope) {
+    
     $scope.album = albumPicasso;
-    $scope.play = function(song) {
-        SongPlayer.setSong($scope.album, song);
-    };
-    $scope.pause = function() {
-        SongPlayer.pause();
-    };
 }]);
-
 
 
 
 //Services//
 
 BlocJams.service('SongPlayer', function() {
-    var getIndex = function(album, song) {
-        return album.songs.indexOf(song);
-    };
+
     var currentSoundFile = null;
     return {
-        isPlaying: false,
+        playing: false,
         currentAlbum: null,
+        //song object
         currentSong: null,
+        //initial volume
         volume: 80,
+        //start audio & let everything know its playing
         play: function() {
             currentSoundFile.play();
-            this.isPlaying = true;
+            this.playing = true;
         },
+        //pause audio & let everything know its no longer playing
         pause: function() {
             currentSoundFile.pause();
-            this.isPlaying = false;
+            this.playing = false;
         },
         setVolume: function(value) {
             if (currentSoundFile) {
                 currentSoundFile.setVolume(value);
             }
-        },
-        setSong: function(album, song) {
-            if (currentSoundFile) {
-                currentSoundFile.stop();
-            }
-            this.currentAlbum = album;
-            this.currentSong = song;
-            currentSoundFile = new buzz.sound(song.audioUrl, {
-                formats: ['mp3'],
-                preload: true
-            });
-            this.play();
-            this.setVolume(this.volume);
-        },
-        previous: function() {
-            var index = getIndex(this.currentAlbum, this.currentSong);
-            index--;
-            if (index < 0) {
-                index = this.currentAlbum.songs.length - 1;
-            }
-            var song = this.currentAlbum.songs[index];
-            this.setSong(this.currentAlbum, song);
-        },
-        next: function() {
-            var index = getIndex(this.currentAlbum, this.currentSong);
-            index++;
-            if (index >= this.currentAlbum.songs.length) {
-                index = 0;
-            }
-            var song = this.currentAlbum.songs[index];
-            this.setSong(this.currentAlbum, song);
-        },
-        getTimePos: function() {
-            if (currentSoundFile) {
-                currentSoundFile.bind('timeupdate', function() {
-                    return this.getTime() / this.getDuration();
-                });
-            }
         }
     };
 });
+
+
+BlocJams.directive('slider', ['$document', function($document) {
+    return {
+        restrict: 'E',
+
+        replace: true,
+        scope: { 
+
+        },
+        templateUrl: '/template/player-bar.html',
+        link: function(scope, element, attrs) {
+            //initial value of slider
+            scope.value = 0; 
+            //set new value for thumb
+            $scope.setThumb = function(value) {
+                $(element).find('thumb').css({left: parseInt(value) + '%'});
+
+
+
+
+            };
+            //set new value
+            scope.setValue = function(newVal) {
+            
+            };
+            //update seekbar to value between 1-100
+            scope.setSeek = function($slider, ratio) {
+                var offsetPercent = ratio * 100;
+                offsetPercent = Math.max(0, offsetPercent);
+                offsetPercent = Math.min (100, offsetPercent);
+                scope.setThumb(offsetPercent);
+                scope.setFill(offsetPercent);
+                scope.setValue(offsetPercent);
+            };
+            
+            //seek to clicked area
+            $(element).on('click', function(event) {
+                var offsetX = event.pageX - $(element).offset().left;
+                var barWidth = $(element).width();
+                var ratio = offset / barWidth;
+                scope.setSeek($(element), ratio);
+                
+            });
+            //drag thumb
+            scope.seek = function(event) {
+                $(document).bind('mousemove.thumb', function (event) {
+                    var offset = event.pageX - $(element).offset().left;
+                    var barWidth = $(element).width();
+                    var ratio = offset / barWidth;
+                    scope.setSeek($(element), ratio);
+                });
+                $(document).bind('mouseup.thumb', function() {
+                    $(document).unbind('mousemove.thumb');
+                    $(document).unbind('mouseup.thumb');
+                });
+            };
+        }
+    };
+}]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
