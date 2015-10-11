@@ -9,7 +9,7 @@
     z-index: 100;
 }
 
-player-bar a,
+.player-bar a,
 .player-bar a:hover {
     color: white;
     cursor: pointer;
@@ -37,7 +37,6 @@ player-bar a,
 .player-bar .right-controls {
     width: 25%;
     text-align: right;
-    padding-right: 1rem;
 }
 
 .player-bar .player-bar-control-group a {
@@ -135,7 +134,7 @@ player-bar a,
 .seek-bar:hover .thumb {
     width: 1.1rem;
     height: 1.1rem;
-    margin-top: -0.6rem;
+    margin-top: -0.5rem;
     margin-left: -0.5rem;
 }
 
@@ -199,10 +198,3 @@ player-bar a,
         display: block;
      }
  }
-
-
-.player-bar .currently-playing {
-    width: 50%;
-    text-align: center;
-    position: relative;
-}
